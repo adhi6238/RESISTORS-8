@@ -185,35 +185,7 @@
                 };
                 reader.readAsDataURL(file);
             }
-<section class="media-section">
-    <h2>Media Section</h2>
-    <input type="file" id="video-upload" accept="video/*" style="display: none;" onchange="uploadVideo(event)">
-    <div class="media-container" id="video-container"></div>
-</section>
-if (currentUserEmail === adminEmail) {
-    document.getElementById("video-upload").style.display = "block";
-}
-window.onload = function() {
-    const savedVideos = localStorage.getItem("videos");
-    if (savedVideos) {
-        document.getElementById("video-container").innerHTML = savedVideos;
-    }
-};
-function uploadVideo(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const videoContainer = document.getElementById("video-container");
-            const video = document.createElement("video");
-            video.controls = true;
-            video.src = e.target.result;
-            videoContainer.appendChild(video);
-localStorage.setItem("videos", videoContainer.innerHTML);
-        };
-        reader.readAsDataURL(file);
-    }
-}
+
         }
     </script>
 </body>
