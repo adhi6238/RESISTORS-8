@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resistors Group</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+        header {
+            background-color: #0078d7;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        header img {
+            width: 100px;
+            height: auto;
+            border-radius: 50%;
+        }
+        header input[type="file"] {
+            display: none;
+        }
+        section {
+            padding: 20px;
+        }
+        .comments textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .comments button {
+            background-color: #0078d7;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .comments button:hover {
+            background-color: #005bb5;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+        .media-section input[type="file"] {
+            display: block;
+            margin: 10px 0;
+        }
+        .media-container img, .media-container video {
+            max-width: 300px;
+            max-height: 300px;
+            margin: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img id="logo" src="default-logo.jpg" alt="Group Logo">
+        <h1>Welcome to Resistors</h1>
+        <p><em>Resist Negativity</em></p>
+        <input type="file" id="logo-upload" accept="image/*" onchange="changeLogo(event)">
+    </header>
+
+    <section>
+        <h2>About Us</h2>
+        <div id="about-us" contenteditable="false">This group is made for the Mpowerment program. We can share our experiences through this web page.</div>
+    </section>
+
+    <section>
+        <h2>Leave a Comment</h2>
+        <div class="comments">
+            <textarea placeholder="Type your comment here..."></textarea>
+            <button onclick="submitComment()">Submit</button>
+            <div id="comments-list"></div>
+        </div>
+    </section>
+
+    <section class="media-section">
+        <h2>Media Section</h2>
+        <input type="file" id="image-upload" accept="image/*" onchange="uploadMedia(event, 'image')" disabled>
+        <input type="file" id="video-upload" accept="video/*" onchange="uploadMedia(event, 'video')" disabled>
+        <div class="media-container" id="media-container"></div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Resistors Group. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Mock user email (Replace with actual authentication logic)
+        const currentUserEmail = prompt("Enter your email:", "");
+
+        // Admin email
+        const adminEmail = "mohan5534344@gmail.com";
+
+        // Enable admin controls
+        if (currentUserEmail === adminEmail) {
+            document.getElementById("logo-upload").style.display = "block";
+            document.getElementById("about-us").contentEditable = "true";
+            document.getElementById("image-upload").disabled = false;
+            document.getElementById("video-upload").disabled = false;
+        }
+
+        // Load persistent data
+        window.onload = function() {
+            const savedLogo = localStorage.getItem("groupLogo");
+            const savedAboutUs = localStorage.getItem("aboutUs");
+            const savedComments = localStorage.getItem("comments");
+            const savedMedia = localStorage.getItem("media");
+
+            if (savedLogo) document.getElementById("logo").src = savedLogo;
+            if (savedAboutUs) document.getElementById("about-us").innerHTML = savedAboutUs;
+            if (savedComments) document.getElementById("comments-list").innerHTML = savedComments;
+            if (savedMedia) document.getElementById("media-container").innerHTML = savedMedia;
+        };
+
+        // Change the logo (Admin only)
+        function changeLogo(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById("logo").src = e.target.result;
+                    localStorage.setItem("groupLogo", e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Save "About Us" content (Admin only)
+        document.getElementById("about-us").addEventListener("input", () => {
+            if (currentUserEmail === adminEmail) {
+                localStorage.setItem("aboutUs", document.getElementById("about-us").innerHTML);
+            }
+        });
+
+        // Submit a comment
+        function submitComment() {
+            const commentText = document.querySelector(".comments textarea").value;
+            if (commentText.trim()) {
+                const commentDiv = document.createElement("div");
+                commentDiv.textContent = commentText;
+                document.getElementById("comments-list").appendChild(commentDiv);
+                document.querySelector(".comments textarea").value = "";
+
+                // Save comments
+                localStorage.setItem("comments", document.getElementById("comments-list").innerHTML);
+            }
+        }
+
+        // Upload media (Admin only)
+        function uploadMedia(event, type) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const mediaContainer = document.getElementById("media-container");
+                    if (type === "image") {
+                        const img = document.createElement("img");
+                        img.src = e.target.result;
+                        mediaContainer.appendChild(img);
+                    } else if (type === "video") {
+                        const video = document.createElement("video");
+                        video.controls = true;
+                        video.src = e.target.result;
+                        mediaContainer.appendChild(video);
+                    }
+                    localStorage.setItem("media", mediaContainer.innerHTML);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+    </script>
+</body>
+</html>
